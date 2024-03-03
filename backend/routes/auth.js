@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken');
 
 const JWT_SECRET = 'hello!ndia';
 
-
+//CreateUser
 router.post('/createuser',[
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'Password must be atleast 5 characters').isLength({min: 5}),
@@ -53,5 +53,49 @@ router.post('/createuser',[
 
     
 })
+
+//Login
+router.post('/login',[
+    body('email', 'Enter a valid email').isEmail(),
+    body('password', 'Enter the Password').exists()
+], async (req,res) =>{
+    const result = validationResult(req);
+    if (result.isEmpty()){
+        const {email, password} = req.body;
+
+        try{
+            let user = await User.findOne({email:email});
+            if(!user){
+                return res.status(400).json({error: "Enter correct credentials"});
+            }
+
+            const passComp = await bcrypt.compare(password, user.password);
+
+            if(!passComp){
+                return res.status(400).json({error: "Enter correct credentials"});
+            }
+
+            const data={
+                user:{
+                    id:user.id
+                }
+            }
+            const authToken = jwt.sign(data, JWT_SECRET);
+
+            return res.json({authToken: authToken});
+
+
+        }
+
+        catch(error){
+            console.log(error.message);
+            res.status(500).send("Internal Server Error");
+        }
+
+        return ;
+    }
+
+    res.status(400).send({ errors: result.array() });
+});
 
 module.exports=router;
