@@ -12,7 +12,7 @@ router.get('/fetchallnotes',fetchUser, async (req,res)=>{
     res.json(notes);
 })
 
-// ROUTE 1: add notes 
+// ROUTE 2: add notes 
 router.post('/addnote',fetchUser,[
     body('title', 'Enter a valid Title').isLength({min:3}),
     body('description', 'Description must be atleast 5 characters').isLength({min: 5}),
@@ -35,6 +35,52 @@ router.post('/addnote',fetchUser,[
     }
 })
 
+//ROUTE 3: UPDATE NOTE
+
+router.put('/updatenote/:id', fetchUser, async (req,res)=>{
+    const {title, description, tag} = req.body;
+
+    try {
+        const newNote={};
+        if(title){newNote.title=title};
+        if(description){newNote.description=description};
+        if(tag){newNote.tag=tag};
+        newNote.lastUpdate = Date.now();
+
+        let note=await Notes.findById(req.params.id);
+        if(!note){res.status(404).send("Note not found!")}
+        newNote.timeStamp=note.timeStamp;
+
+        if(note.user.toString()!==req.user.id){return res.status(401).send("Not Allowed!")}
+
+        note = await Notes.findByIdAndUpdate(req.params.id, {$set: newNote}, {new:true});
+        res.json({note});
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error");
+
+    }
+})
+
+//ROUTE 4: DELETE NOTE
+router.delete('/deletenote/:id', fetchUser, async (req,res)=>{
+    try {
+        
+        let note=await Notes.findById(req.params.id);
+        if(!note){res.status(404).send("Note not found!")}
+
+        if(note.user.toString()!==req.user.id){return res.status(401).send("Not Allowed!")}
+
+        note = await Notes.findByIdAndDelete(req.params.id)
+        res.json({Success: "Note has been deleted!", note:note});
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error");
+
+    }
+})
 
 
 module.exports=router;

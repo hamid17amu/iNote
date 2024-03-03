@@ -21,6 +21,10 @@ const NotesSchema = new Schema({
     timeStamp:{
         type:Date,
         default:Date.now
+    },
+    lastUpdate:{
+        type:Date,
+        default:Date.now
     }
 
   });
