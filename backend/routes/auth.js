@@ -4,6 +4,7 @@ const User = require('../models/User')
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+const fetchUser = require('../middleware/fetchUser');
 
 const JWT_SECRET = 'hello!ndia';
 
@@ -45,7 +46,7 @@ router.post('/createuser',[
         
         catch(error){
             console.log(error.message);
-            res.status(500).send("some error occured");
+            res.status(500).send("Internal Server Error");
         }
     }
 
@@ -97,5 +98,21 @@ router.post('/login',[
 
     res.status(400).send({ errors: result.array() });
 });
+
+//ROUTE 3 : GET USER DETAILS
+
+router.post('/getuser', fetchUser, async (req,res) =>{
+    try {
+        userID=req.user.id;
+        const user = await User.findById(userID).select('-password');
+        
+        res.send(user);
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 module.exports=router;
