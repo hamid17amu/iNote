@@ -29,7 +29,7 @@ const Login = (props) => {
         if(json.success){
         localStorage.setItem('token', json.authToken);
         nav("/");
-        props.showAlert("Welcome to iNotes", "success");
+        props.showAlert("Welcome to iNote", "success");
 
         }
         else{
@@ -39,7 +39,7 @@ const Login = (props) => {
     }
   return (
     <div className='mt-3'>
-        <h2>Login to iNotes</h2>
+        <h2>Login to iNote</h2>
     <form  onSubmit={handleSubmit}>
     <div className="mb-3">
     <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
