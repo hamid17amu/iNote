@@ -14,13 +14,14 @@ router.post('/createuser',[
     body('password', 'Password must be atleast 5 characters').isLength({min: 5}),
     body('name', 'Enter a valid Name').isLength({min: 3})
 ], async (req,res)=>{
+    let success=false;
     const result = validationResult(req);
     if (result.isEmpty()) {
 
         try{       
             let user = await User.findOne({email:req.body.email});
             if(user){
-                return res.status(400).json({error: 'Email already exists!'})
+                return res.status(400).json({success: success, error: 'Email already exists!'})
             }
             const salt = await bcrypt.genSalt(10);
             const secPass = await bcrypt.hash(req.body.password, salt);
@@ -39,8 +40,9 @@ router.post('/createuser',[
             // .catch((error)=>{console.log(error); res.json({error: 'Email already exists', message: error.message})});
             const authToken = jwt.sign(data, JWT_SECRET);
             // console.log(jwtdata);
+            success = true;
 
-            return res.json({authToken: authToken});
+            return res.json({success: success, authToken: authToken});
             // res.send(`Hello, ${req.body.name}!`);
         }
         
@@ -61,19 +63,21 @@ router.post('/login',[
     body('password', 'Enter the Password').exists()
 ], async (req,res) =>{
     const result = validationResult(req);
+    let success=false;
+    
     if (result.isEmpty()){
         const {email, password} = req.body;
 
         try{
             let user = await User.findOne({email:email});
             if(!user){
-                return res.status(400).json({error: "Enter correct credentials"});
+                return res.status(400).json({success: success, error: "Enter correct credentials"});
             }
 
             const passComp = await bcrypt.compare(password, user.password);
 
             if(!passComp){
-                return res.status(400).json({error: "Enter correct credentials"});
+                return res.status(400).json({success: success, error: "Enter correct credentials"});
             }
 
             const data={
@@ -82,8 +86,8 @@ router.post('/login',[
                 }
             }
             const authToken = jwt.sign(data, JWT_SECRET);
-
-            return res.json({authToken: authToken});
+            success = true;
+            return res.json({success: success, authToken: authToken});
 
 
         }
@@ -103,7 +107,7 @@ router.post('/login',[
 
 router.post('/getuser', fetchUser, async (req,res) =>{
     try {
-        userID=req.user.id;
+        let userID=req.user.id;
         const user = await User.findById(userID).select('-password');
         
         res.send(user);
