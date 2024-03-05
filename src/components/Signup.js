@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Signup = (props) => {
 
-    const [cred, setCred] = useState({ name: "", email: "", password: "" });
+    const [cred, setCred] = useState({ name: "", email: "", password: "", cpassword:""});
 
     const onChange = ({ target }) => {
       setCred({ ...cred, [target.name]: target.value });
@@ -14,6 +14,11 @@ const Signup = (props) => {
     const host = "http://localhost:5000";
     const handleSubmit = async (e) => {
       e.preventDefault();
+
+      if(cred.password!==cred.cpassword){
+        return props.showAlert("Password and Confirm Password must be same", "danger");
+      }
+
       const response = await fetch(`${host}/api/auth/createuser`, {
         method: "POST",
         headers: {
@@ -27,14 +32,14 @@ const Signup = (props) => {
       });
     
       const json = await response.json();
-      console.log(json);
+    //   console.log(json);
     
       if (json.success) {
         localStorage.setItem("token", json.authToken);
         nav("/");
         props.showAlert("Welcome to iNotes", "success");
       } else {
-        props.showAlert("Email already exists", "danger");
+        props.showAlert(json.errors[0].msg, "danger");
       }
     };    
 
@@ -54,7 +59,7 @@ const Signup = (props) => {
     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
     <input type="password" className="form-control" id="password" name='password' value={cred.password} onChange={onChange}/>
     <label htmlFor="exampleInputPassword1" className="form-label">Confirm Password</label>
-    <input type="password" className="form-control" id="cpassword" name='cpassword' value={cred.password} onChange={onChange}/>
+    <input type="password" className="form-control" id="cpassword" name='cpassword' value={cred.cpassword} onChange={onChange}/>
     </div>
     <button type="submit" className="btn btn-primary">Submit</button>
     </form>

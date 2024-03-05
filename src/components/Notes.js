@@ -30,7 +30,7 @@ const Notes = (props) => {
         editNote(Note.id, Note.etitle, Note.edescription, Note.etag)
         refClose.current.click();
         e.preventDefault();
-        console.log(Note);
+        // console.log(Note);
         props.showAlert("Note updated successfully", "success");
 
       }

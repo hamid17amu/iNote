@@ -8,6 +8,15 @@ const fetchUser = require('../middleware/fetchUser');
 
 const JWT_SECRET = 'hello!ndia';
 
+const genToken = (user)=>{
+    const data={
+        user:{
+            id:user.id
+        }
+    }
+    return jwt.sign(data, JWT_SECRET);
+}
+
 //CreateUser
 router.post('/createuser',[
     body('email', 'Enter a valid Email').isEmail(),
@@ -31,14 +40,15 @@ router.post('/createuser',[
                 password: secPass,
             })
             
-            const data={
-                user:{
-                    id:user.id
-                }
-            }
+            // const data={
+            //     user:{
+            //         id:user.id
+            //     }
+            // }
             // .then((user)=>{res.json(user)})
             // .catch((error)=>{console.log(error); res.json({error: 'Email already exists', message: error.message})});
-            const authToken = jwt.sign(data, JWT_SECRET);
+            // const authToken = jwt.sign(data, JWT_SECRET);
+            const authToken = genToken(user);
             // console.log(jwtdata);
             success = true;
 
@@ -117,6 +127,37 @@ router.post('/getuser', fetchUser, async (req,res) =>{
         res.status(500).send("Internal Server Error");
     }
 });
+
+router.post('/changepassword', fetchUser, async(req, res)=>{
+    let success = false;
+    try{
+        const {oldPass, newPass} = req.body;
+        let userID=req.user.id;
+
+        let user = await User.findById(userID).select('+password');
+
+        const passComp = await bcrypt.compare(oldPass, user.password);
+
+        if(!passComp){
+            return res.status(400).json({success: success, error: "Old password is incorrect"});
+        }
+        console.log(user);
+        const salt = await bcrypt.genSalt(10);
+        const secPass = await bcrypt.hash(newPass, salt);
+
+        user = await User.findByIdAndUpdate(userID, {$set: {password: secPass}}, {new:true});
+
+        const authToken = genToken(user);
+        success = true;        
+        return res.json({success: success, authToken: authToken});
+
+    }
+    catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error");
+    }
+
+})
 
 
 module.exports=router;

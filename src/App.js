@@ -11,6 +11,7 @@ import NoteState from './context/Notes/NoteState';
 import Alert from './components/Alert';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Changepass from './components/Changepass'
 import { useState } from 'react';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route exact path="/about" element={<About/>}/>
           <Route exact path="/login" element={<Login showAlert={showAlert}/>}/>
           <Route exact path="/signup" element={<Signup showAlert={showAlert}/>}/>
+          <Route exact path="/changepass" element={<Changepass showAlert={showAlert}/>}/>
         
         </Routes>
         </div>

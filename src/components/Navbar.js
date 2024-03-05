@@ -33,10 +33,15 @@ const Navbar = (props) => {
             <Link className="nav-link disabled" aria-disabled="true">Disabled</Link>
           </li>
         </ul>
-        {!localStorage.getItem('token')? <form className="d-flex" role="search">
+        {!localStorage.getItem('token') &&<form className="d-flex" role="search">
         <Link className="btn btn-primary mx-1" to="/login" role="button">Login</Link>
         <Link className="btn btn-primary mx-1" to="/signup" role="button">Signup</Link>
-        </form>:<button className='btn btn-primary' onClick={handleLogout}>Logout</button>}
+        </form>}
+        {localStorage.getItem('token') &&<form className="d-flex" role="search">
+        <Link className='btn btn-primary mx-2' to="/changepass">Change Password</Link>
+        <button className='btn btn-primary' onClick={handleLogout}>Logout</button>
+        </form>}
+        
       </div>
     </div>
   </nav></div>
