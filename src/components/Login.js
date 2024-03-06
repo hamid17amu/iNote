@@ -12,7 +12,8 @@ const Login = (props) => {
 
     let nav = useNavigate();
 
-    const host = "http://localhost:5000"
+    // const host = "http://localhost:5000"
+    const host = process.env.REACT_APP_HOST;
     const handleSubmit = async (e)=>{
         e.preventDefault();
         const response = await fetch(`${host}/api/auth/login`, {
@@ -49,7 +50,7 @@ const Login = (props) => {
     <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
     <input type="password" className="form-control" id="password" name='password' value={cred.password} onChange={onChange}/>
     </div>
-    <button type="submit" className="btn btn-primary">Submit</button>
+    <button type="submit" className="btn btn-primary">Login</button>
     </form>
   </div>
   )

@@ -11,7 +11,8 @@ const Signup = (props) => {
     
     let nav = useNavigate();
     
-    const host = "http://localhost:5000";
+    // const host = "http://localhost:5000";
+    const host = process.env.REACT_APP_HOST;
     const handleSubmit = async (e) => {
       e.preventDefault();
 
@@ -61,7 +62,7 @@ const Signup = (props) => {
     <label htmlFor="exampleInputPassword1" className="form-label">Confirm Password</label>
     <input type="password" className="form-control" id="cpassword" name='cpassword' value={cred.cpassword} onChange={onChange}/>
     </div>
-    <button type="submit" className="btn btn-primary">Submit</button>
+    <button type="submit" className="btn btn-primary">Signup</button>
     </form>
   </div>  )
 }

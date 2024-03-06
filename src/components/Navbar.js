@@ -1,8 +1,12 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {Link, useLocation, useNavigate} from "react-router-dom";
-
+import noteContext from "../context/Notes/NoteContext";
+import LoadingBar from 'react-top-loading-bar';
 
 const Navbar = (props) => {
+  const context = useContext(noteContext);
+  const {progress} = context;
+
     let location = useLocation();
     let nav = useNavigate();
 
@@ -14,7 +18,8 @@ const Navbar = (props) => {
     }
 
   return (
-    <div><nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <div>
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
     <div className="container-fluid">
       <Link className="navbar-brand" to="/">iNote</Link>
       <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,18 +39,19 @@ const Navbar = (props) => {
           </li>
         </ul>
         {!localStorage.getItem('token') &&<form className="d-flex" role="search">
-        <Link className="btn btn-primary mx-1" to="/login" role="button">Login</Link>
-        <Link className="btn btn-primary mx-1" to="/signup" role="button">Signup</Link>
+        <Link className="btn btn-primary mx-2" to="/login" role="button">Login</Link>
+        <Link className="btn btn-primary" to="/signup" role="button">Signup</Link>
         </form>}
         {localStorage.getItem('token') &&<form className="d-flex" role="search">
-        <Link className='btn btn-primary mx-2' to="/profile">Profile</Link>
+        <Link className='btn btn-primary' to="/profile">Profile</Link>
         <Link className='btn btn-primary mx-2' to="/changepass">Change Password</Link>
         <button className='btn btn-primary' onClick={handleLogout}>Logout</button>
         </form>}
-        
       </div>
     </div>
-  </nav></div>
+  </nav>
+    <LoadingBar color='#f11946' height={4} progress={progress} className="align-bottom"/>
+  </div>
   )
 }
 
