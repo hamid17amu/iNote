@@ -18,7 +18,7 @@ iNote is a sophisticated note-taking application built using the MERN (MongoDB, 
 
 2. **Install Dependencies:**
   ```bash
-  npm install
+     npm install
   ```
 3. **Configure Environment Variables:**
   Create a .env file in the root directory and add the following  variables:
