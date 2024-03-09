@@ -17,18 +17,18 @@ iNote is a sophisticated note-taking application built using the MERN (MongoDB, 
    ```
 
 2. **Install Dependencies:**
-  ```bash
+     ```bash
      npm install
-  ```
+     ```
 3. **Configure Environment Variables:**
   Create a .env file in the root directory and add the following  variables:
-  ```bash
+     ```bash
      REACT_APP_HOST=your_backend_host_url
-  ```
+     ```
 4. **Run the App:**
-  ```bash
+     ```bash
      npm start
-  ```
+     ```
 5. **Open in Browser:**
 Open your web browser and navigate to http://localhost:3000 to start using iNote.
 
